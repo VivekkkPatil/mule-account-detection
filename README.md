@@ -288,4 +288,4 @@ streamlit run app/streamlit_app.py
 
 **Vivek Patil**
 B.E. Computer Engineering — SIES Graduate School of Technology, Mumbai University
-[GitHub](https://github.com/VivekkkPatil) · [LinkedIn](https://www.linkedin.com/in/vivek-patil-8ba9332a7)
+[GitHub](https://github.com/VivekkkPatil) · [LinkedIn](www.linkedin.com/in/vivek-patil-8ba9332a7)
