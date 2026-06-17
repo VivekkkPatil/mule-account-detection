@@ -1,0 +1,6 @@
+ACCOUNT: 2352
+RISK TIER: Amber
+RISK SCORE: 0.3565
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #2352 has been assessed as Amber risk with an overall risk score of 0.3565, indicating a moderate level of suspicion for potential mule account activity. The top factors contributing to this risk score include unusual transaction patterns (F2489) and high-volume payment activity (F3898), which suggest a potential for money laundering or illicit funds transfer. Additionally, the account's overall behavior is further flagged by a notable transaction velocity (F2388). I recommend that we request additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitor transactions for a period of 30 days to gather more information before determining further action.

@@ -1,0 +1,6 @@
+ACCOUNT: 9001
+RISK TIER: Red
+RISK SCORE: 0.7887
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9001 has been assessed as high-risk with an overall risk score of 0.7887, categorizing it as a Red Tier account. The top factors contributing to this risk assessment are unusual transaction patterns (F3484 and F3898), which indicate potential money laundering activity, and suspicious account behavior (F3908), suggesting possible mule account usage. These factors outweigh the mitigating factors, such as the account's relatively stable historical activity (F270 and F1597). I recommend freezing Account #9001 immediately and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity and legitimacy of transactions. Further review of recent transactions and account activity is also warranted to determine the appropriate next steps.

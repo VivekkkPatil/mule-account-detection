@@ -1,0 +1,6 @@
+ACCOUNT: 206
+RISK TIER: Amber
+RISK SCORE: 0.4349
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note for Account #206: Based on the risk assessment, Account #206 has been categorized as Amber with an Overall Risk Score of 0.4349, indicating a moderate level of suspicion for potential mule activity. The top factors contributing to this risk score include unusual transaction patterns (F3898 and F3908), which suggest a high likelihood of money laundering, as well as a concerning transaction velocity (F2489). To further investigate, I recommend requesting additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitor transactions for a period of 30 days to assess for any further suspicious activity. If the risk score persists or increases, consideration should be given to freezing the account to prevent potential illicit activity.

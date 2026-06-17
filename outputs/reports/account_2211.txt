@@ -1,0 +1,6 @@
+ACCOUNT: 2211
+RISK TIER: Amber
+RISK SCORE: 0.4389
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #2211 has been assessed as posing a moderate risk, with an overall risk score of 0.4389, categorizing it as an Amber risk tier. The top factors contributing to this risk include high-risk transaction patterns (F3898) and unusual account activity (F3908), which suggest potential suspicious behavior. Additionally, the XGBoost Mule Probability of 0.5402 further supports the likelihood of this account being used for illicit purposes. I recommend that the account be placed under enhanced monitoring, with a focus on tracking transactions and account activity, to gather more information before determining the next course of action, such as requesting additional KYC documentation or freezing the account.

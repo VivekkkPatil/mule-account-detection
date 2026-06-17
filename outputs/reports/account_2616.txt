@@ -1,0 +1,6 @@
+ACCOUNT: 2616
+RISK TIER: Amber
+RISK SCORE: 0.4622
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #2616 has been assessed as Amber risk with an overall risk score of 0.4622, indicating a moderate level of suspicion for potential mule account activity. The top factors driving this risk score are unusual transaction patterns (F3898) and high-volume fund transfers (F3908), which have significantly contributed to the elevated risk assessment. Despite some mitigating factors, such as a stable account history (F3493) and low-risk customer information (F162), the suspicious transactional behavior warrants further scrutiny. I recommend that the account be placed under enhanced monitoring for a period of 30 days to gather more information on transaction patterns and to assess the legitimacy of account activity.

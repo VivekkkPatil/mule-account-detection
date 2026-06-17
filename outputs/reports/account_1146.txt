@@ -1,0 +1,6 @@
+ACCOUNT: 1146
+RISK TIER: Amber
+RISK SCORE: 0.4427
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #1146 has been assessed as Amber risk with an overall risk score of 0.4427, indicating a moderate level of suspicion for potential mule account activity. The top factors driving this risk score include high-risk transaction patterns (F3898) and unusual account behavior (F2489), which suggest potential involvement in illicit activities. Additionally, the account's XGBoost Mule Probability of 0.5229 further supports the suspicion of mule account activity. I recommend requesting additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitoring transactions for a period of 30 days to gather more information before considering further action.

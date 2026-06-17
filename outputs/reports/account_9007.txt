@@ -1,0 +1,6 @@
+ACCOUNT: 9007
+RISK TIER: Red
+RISK SCORE: 0.6513
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9007 has been assessed as high-risk with an overall risk score of 0.6513, categorized as Red, and a high XGBoost Mule Probability of 0.8033. The top factors contributing to this risk assessment include unusual transaction patterns (F3898 and F3811), which indicate potential money laundering activity, and suspicious account behavior (F3908). These factors suggest that the account may be being used as a mule account for illicit transactions. I recommend that the account be frozen immediately to prevent further potential fraudulent activity and that we request updated KYC documents to verify the account holder's identity and assess the legitimacy of their transactions.

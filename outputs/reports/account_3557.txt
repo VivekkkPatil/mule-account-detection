@@ -1,0 +1,6 @@
+ACCOUNT: 3557
+RISK TIER: Amber
+RISK SCORE: 0.3477
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note for Account #3557: Based on the risk assessment, Account #3557 has been categorized as Amber with an Overall Risk Score of 0.3477, indicating a moderate level of suspicious activity. The top factors contributing to this risk score are F3898, F3811, and F2489, which suggest unusual transaction patterns, high-value transfers, and inconsistent account holder behavior. These factors warrant further scrutiny, as they may indicate potential mule account activity. I recommend requesting additional Know-Your-Customer (KYC) documents and monitoring the account's transactions for a period of 30 days to gather more information before determining the next course of action.

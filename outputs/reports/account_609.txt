@@ -1,0 +1,6 @@
+ACCOUNT: 609
+RISK TIER: Amber
+RISK SCORE: 0.4496
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note for Account #609: This account has been assessed as Amber risk with an overall risk score of 0.4496, indicating a moderate level of suspicion for potential mule activity. The top factors contributing to this risk score are F3898, which suggests unusual transaction patterns, and F3908, which indicates a high volume of incoming transfers from unknown sources. Additionally, despite some mitigating factors such as F3493 and F270, the XGBoost Mule Probability of 0.5411 suggests a significant likelihood of mule account behavior. Based on these findings, I recommend that the account be placed under enhanced monitoring to track transactions and activity, and that the account holder be requested to provide updated KYC documents to verify their identity and account purpose.

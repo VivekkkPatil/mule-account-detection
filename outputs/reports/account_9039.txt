@@ -1,0 +1,6 @@
+ACCOUNT: 9039
+RISK TIER: Amber
+RISK SCORE: 0.4449
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9039 has been assessed as Amber risk with an overall risk score of 0.4449, indicating a moderate level of suspicion for potential mule account activity. The top factors contributing to this risk score include unusual transaction patterns (F2390 and F3898), which suggest a high volume of potentially suspicious transactions, as well as inconsistent account holder behavior (F2388). These factors, in combination, warrant further review to determine the legitimacy of the account activity. I recommend requesting additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitoring the account's transactions for a period of 30 days to gather more information before considering further action.

@@ -1,0 +1,6 @@
+ACCOUNT: 9068
+RISK TIER: Red
+RISK SCORE: 0.7985
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9068 has been assessed as high-risk with an overall risk score of 0.7985, categorized under the Red Risk Tier, indicating a strong likelihood of being a mule account. The top factors contributing to this assessment include unusual transaction patterns (F3811) and suspicious account activity (F3898), which significantly increase the risk profile of this account. Additionally, the account's behavior (F3908) has also been flagged as anomalous. Based on these findings, I recommend that the account be frozen immediately to prevent further potential fraudulent activity, and that we request updated Know-Your-Customer (KYC) documents to verify the account holder's identity and legitimacy.

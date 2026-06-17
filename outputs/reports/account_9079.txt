@@ -1,0 +1,6 @@
+ACCOUNT: 9079
+RISK TIER: Red
+RISK SCORE: 0.8387
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9079 has been assessed as high-risk with an overall risk score of 0.8387, categorizing it as a Red Tier account with a high likelihood of being a mule account (XGBoost Mule Probability: 0.9987). The top factors contributing to this assessment include unusual transaction patterns (F3811 and F3898), which indicate a high volume of suspicious activity, as well as inconsistent account holder behavior (F2388). These factors suggest that the account may be being used for illicit purposes. I recommend that the account be frozen immediately to prevent further potential fraudulent activity and that we request updated Know Your Customer (KYC) documents to verify the account holder's identity and assess the legitimacy of their transactions.

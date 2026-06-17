@@ -1,0 +1,6 @@
+ACCOUNT: 285
+RISK TIER: Red
+RISK SCORE: 0.7408
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #285 has been assessed as high-risk with an overall risk score of 0.7408, categorized as Red, and a XGBoost Mule Probability of 0.9153, indicating a strong likelihood of being a mule account. The top factors contributing to this risk score include unusual patterns related to transaction velocity (F3811) and suspicious login activity (F3898), which suggest potential fraudulent activity. Additionally, the account's behavior is also flagged for unusual transactional patterns (F3908). Based on these findings, I recommend that the account be frozen immediately and that we request updated Know-Your-Customer (KYC) documents to verify the account holder's identity and legitimacy.

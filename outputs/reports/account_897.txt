@@ -1,0 +1,6 @@
+ACCOUNT: 897
+RISK TIER: Red
+RISK SCORE: 0.7545
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #897 has been assessed as high-risk with an overall risk score of 0.7545, categorizing it as a Red Risk Tier. The top factors contributing to this assessment include unusual transaction patterns (F3898) and high-volume fund transfers (F2489 and F3811), which are indicative of potential mule account activity. These factors, combined with the account's high XGBoost Mule Probability of 0.9343, suggest a strong likelihood of illicit activity. I recommend freezing the account immediately and requesting additional Know-Your-Customer (KYC) documents to further investigate and verify the account holder's identity and intentions.

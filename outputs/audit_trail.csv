@@ -1,0 +1,3 @@
+timestamp,account_idx,action,risk_tier,risk_score,investigator,reason,status
+2026-06-14 03:42:36,285,FREEZE,Red,0.7449,Compliance Officer,High risk score + mule behavioral pattern detected by AI system,PENDING
+2026-06-14 13:41:30,285,FREEZE,Red,0.7449,Compliance Officer,High risk score + mule behavioral pattern detected by AI system,PENDING

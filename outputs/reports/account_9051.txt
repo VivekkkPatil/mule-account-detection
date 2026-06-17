@@ -1,0 +1,6 @@
+ACCOUNT: 9051
+RISK TIER: Amber
+RISK SCORE: 0.3382
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9051 has been assessed as posing a moderate risk of being a mule account, with an overall risk score of 0.3382 and an XGBoost Mule Probability of 0.3886. The top factors contributing to this risk assessment include unusual transaction patterns (F3811), which significantly increases the risk, as well as high-risk payment behaviors (F949) and suspicious account activity (F3484). These factors suggest that the account may be being used to facilitate illicit transactions. I recommend that the account be placed under enhanced monitoring to track transactions and activity, and that the account holder be requested to provide additional Know Your Customer (KYC) documentation to verify their identity and legitimate business purposes.

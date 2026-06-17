@@ -1,0 +1,6 @@
+ACCOUNT: 9033
+RISK TIER: Red
+RISK SCORE: 0.8281
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9033 has been assessed as high-risk with an overall risk score of 0.8281, categorizing it as a Red risk tier. The top factors contributing to this assessment include unusual transaction patterns (F3811 and F3898), which indicate a high likelihood of suspicious activity, as well as inconsistent account holder behavior (F2489). Given the extremely high XGBoost Mule Probability of 0.9990, I recommend immediately freezing the account to prevent potential further fraudulent activity and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity.

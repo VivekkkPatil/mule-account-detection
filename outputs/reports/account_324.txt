@@ -1,0 +1,6 @@
+ACCOUNT: 324
+RISK TIER: Amber
+RISK SCORE: 0.3026
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note for Account #324: This account has been assessed as Amber risk with an overall risk score of 0.3026, indicating a moderate level of suspicion for potential mule activity. The top factors contributing to this risk score include unusual transaction patterns (F3898) and suspicious account behavior (F3908), which suggest a higher likelihood of illicit activity. Additionally, the account's characteristics, such as those related to F3493, are actually decreasing the risk score, but are outweighed by the suspicious factors. I recommend requesting additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitor transactions closely for further suspicious activity.

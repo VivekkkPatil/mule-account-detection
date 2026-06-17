@@ -1,0 +1,6 @@
+ACCOUNT: 9052
+RISK TIER: Red
+RISK SCORE: 0.7536
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9052 has been assessed as high-risk with an overall risk score of 0.7536, categorized as Red, and a XGBoost Mule Probability of 0.9276, indicating a strong likelihood of being a mule account. The top factors contributing to this risk assessment include unusual transaction patterns (F3811 and F3898), which suggest potential money laundering activity, and an atypical account holder profile (F2388). These factors, combined with the account's anomalous behavior, warrant further scrutiny. I recommend freezing the account immediately and requesting updated Know-Your-Customer (KYC) documents to verify the account holder's identity and legitimacy of transactions.

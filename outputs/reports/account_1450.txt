@@ -1,0 +1,6 @@
+ACCOUNT: 1450
+RISK TIER: Amber
+RISK SCORE: 0.3113
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #1450 has been assessed as Amber risk with an overall risk score of 0.3113, indicating a moderate level of suspicious activity. The top factors contributing to this risk score are F3898 and F3908, which suggest unusual transaction patterns and potentially high-risk payment behaviors, while F270 and other factors have a mitigating effect. These factors, combined with an XGBoost Mule Probability of 0.3809, warrant further scrutiny. I recommend requesting additional Know-Your-Customer (KYC) documents and monitoring transactions for a period of 30 days to gather more information and determine the legitimacy of account activity.

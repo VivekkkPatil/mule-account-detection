@@ -1,0 +1,6 @@
+ACCOUNT: 3049
+RISK TIER: Amber
+RISK SCORE: 0.3240
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #3049 has been assessed as Amber risk with an overall risk score of 0.3240, indicating a moderate level of suspicion for potential mule account activity. The top factors contributing to this risk score are unusually high transaction volumes (F3898) and frequent large-value transfers (F2489), which suggest potential money laundering activity. Additionally, the account's XGBoost Mule Probability of 0.3820 further supports the need for closer examination. I recommend requesting additional Know-Your-Customer (KYC) documents and monitoring the account's transactions for a period of 30 days to gather more information and determine the legitimacy of the account holder's activities.

@@ -1,0 +1,6 @@
+ACCOUNT: 9072
+RISK TIER: Amber
+RISK SCORE: 0.3806
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9072 has been assessed as Amber risk with an overall risk score of 0.3806, indicating a moderate level of suspicion for potential mule account activity. The top factors driving this risk score include unusual transaction patterns (F3484 and F3898), which suggest a high volume of potentially suspicious transactions, as well as a concerning account behavior indicator (F3908). These factors contribute to an elevated XGBoost Mule Probability of 0.4579, warranting further review. I recommend requesting additional Know-Your-Customer (KYC) documents and monitoring the account's transactions for a period of 30 days to gather more information and determine the legitimacy of the account activity.

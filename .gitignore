@@ -1,9 +1,4 @@
 .env
 __pycache__/
-*.pkl
-*.csv
-*.png
-models/
-outputs/
 .ipynb_checkpoints/
 venv/

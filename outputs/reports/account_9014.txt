@@ -1,0 +1,6 @@
+ACCOUNT: 9014
+RISK TIER: Red
+RISK SCORE: 0.8079
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9014 has been assessed as high-risk with an overall risk score of 0.8079, categorized as Red, indicating a strong likelihood of being a mule account. The top factors contributing to this risk assessment include unusual transaction patterns (F3898 and F3908), which suggest potential money laundering activity, and suspicious account behavior (F2489), indicating a possible lack of legitimate account usage. Given the high XGBoost Mule Probability of 0.9937, I recommend immediately freezing Account #9014 and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity and legitimacy of account activity. Further review of transaction history and account behavior is also warranted to confirm the suspicious activity.

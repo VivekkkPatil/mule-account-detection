@@ -1,0 +1,6 @@
+ACCOUNT: 9032
+RISK TIER: Amber
+RISK SCORE: 0.3172
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9032 has been assessed as an Amber risk, with an overall risk score of 0.3172, indicating a moderate level of suspicion for potential mule account activity. The top factors driving this risk score include unusual transaction patterns (F3811), high-volume payments to unverified recipients (F3898), and inconsistent account holder behavior (F2489), which collectively contribute to the elevated risk profile. Given these suspicious factors, I recommend that the account be placed under enhanced monitoring for a period of 30 days to gather further evidence of potential mule activity. Additionally, a request for updated Know-Your-Customer (KYC) documents may be necessary to verify the account holder's identity and legitimacy of transactions.

@@ -1,0 +1,6 @@
+ACCOUNT: 9073
+RISK TIER: Red
+RISK SCORE: 0.8403
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9073 has been assessed as high-risk with an overall risk score of 0.8403, categorized as Red, indicating a strong likelihood of being a mule account. The top factors contributing to this assessment include unusual transaction patterns (F3811 and F3898), which suggest potential money laundering activity, and suspicious account behavior (F3484), indicating a potential lack of legitimate account usage. Given the extremely high XGBoost Mule Probability of 0.9997, I recommend immediately freezing the account and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity and legitimacy of account activity.

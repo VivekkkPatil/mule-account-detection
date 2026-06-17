@@ -1,0 +1,6 @@
+ACCOUNT: 9061
+RISK TIER: Red
+RISK SCORE: 0.8246
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9061 has been assessed as high-risk with an overall risk score of 0.8246, categorizing it as a Red Tier account. The top factors contributing to this risk assessment include unusual transaction patterns (F3811 and F3898), which indicate potential money laundering activity, and inconsistent account holder behavior (F2489), suggesting possible account takeover or misuse. Given the extremely high XGBoost Mule Probability of 0.9969, I recommend immediately freezing Account #9061 and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity and legitimacy of transactions.

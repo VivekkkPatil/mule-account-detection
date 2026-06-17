@@ -1,0 +1,6 @@
+ACCOUNT: 2931
+RISK TIER: Amber
+RISK SCORE: 0.3115
+TRUE LABEL: NORMAL
+----------------------------------------
+Investigation Note: Account #2931 has been assessed as Amber risk with an overall risk score of 0.3115, indicating a moderate level of suspicion for potential mule account activity. The top factors driving this risk score include unusual transaction patterns (F3898) and high-risk payment behaviors (F3908), which contribute to the elevated risk assessment. Additionally, the account's overall mule probability, as determined by the XGBoost model, is 0.3704, further supporting the need for closer examination. I recommend requesting additional Know-Your-Customer (KYC) documents to verify the account holder's identity and monitoring the account's transactions for a period of 30 days to gather more information before determining the next course of action.

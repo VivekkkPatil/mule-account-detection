@@ -1,0 +1,6 @@
+ACCOUNT: 9075
+RISK TIER: Red
+RISK SCORE: 0.8359
+TRUE LABEL: MULE
+----------------------------------------
+Investigation Note: Account #9075 has been assessed as high-risk with an overall risk score of 0.8359, categorizing it as a Red risk tier. The top factors contributing to this assessment include unusual transaction patterns (F3484 and F3898), which indicate a high likelihood of suspicious activity, as well as inconsistent account holder behavior (F2489). Given the elevated risk profile and XGBoost Mule Probability of 0.9985, I recommend immediately freezing Account #9075 and requesting updated Know Your Customer (KYC) documents to verify the account holder's identity and legitimacy of transactions.
