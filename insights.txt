@@ -1,0 +1,270 @@
+﻿
+  app\streamlit_app.py:48:    X_processed_B, pipeline_B, 
+feature_names_B = fit_transform_features(X, 
+combined_features)
+  app\streamlit_app.py:49:
+  app\streamlit_app.py:50:    risk_df = 
+pd.read_csv(config.RISK_SCORES_PATH)
+> app\streamlit_app.py:51:    shap_df = 
+pd.read_csv(config.OUTPUTS_DIR / "shap_values.csv")
+  app\streamlit_app.py:52:    oof_preds = 
+np.load(config.OUTPUTS_DIR / "oof_preds_ensemble.npy")
+  app\streamlit_app.py:53:
+  app\streamlit_app.py:54:    return (X, y, X_processed, 
+X_processed_B,
+  app\streamlit_app.py:55:            feature_names, 
+feature_names_B,
+  app\streamlit_app.py:56:            selected_features, 
+combined_features,
+> app\streamlit_app.py:57:            risk_df, shap_df, 
+oof_preds)
+  app\streamlit_app.py:58:
+  app\streamlit_app.py:59:@st.cache_resource
+  app\streamlit_app.py:60:def load_models():
+  app\streamlit_app.py:61:    model_A = 
+joblib.load(config.MODELS_DIR / "xgb_model_tuned.pkl")
+  app\streamlit_app.py:62:    model_B = 
+joblib.load(config.MODELS_DIR / "xgb_model_B.pkl")
+  app\streamlit_app.py:63:    iso = 
+joblib.load(config.MODELS_DIR / "isolation_forest.pkl")
+  app\streamlit_app.py:64:    return model_A, model_B, iso
+  app\streamlit_app.py:65:
+  app\streamlit_app.py:66:(X, y, X_processed, 
+X_processed_B,
+  app\streamlit_app.py:67: feature_names, feature_names_B,
+  app\streamlit_app.py:68: selected_features, 
+combined_features,
+> app\streamlit_app.py:69: risk_df, shap_df, oof_preds) = 
+load_all()
+  app\streamlit_app.py:70:
+  app\streamlit_app.py:71:model_A, model_B, iso_model = 
+load_models()
+  app\streamlit_app.py:72:
+  app\streamlit_app.py:73:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:74:# SIDEBAR
+  app\streamlit_app.py:75:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:76:st.sidebar.image("https://img.ico
+ns8.com/color/96/bank.png", width=60)
+  app\streamlit_app.py:77:st.sidebar.title("Mule Account 
+Detection")
+  app\streamlit_app.py:91:- **Model B**: Domain-Informed 
+(98 features)
+  app\streamlit_app.py:92:- **Ensemble**: 60/40 blend 
+(final)
+  app\streamlit_app.py:93:- Isolation Forest anomaly 
+detection
+> app\streamlit_app.py:94:- SHAP explainability
+  app\streamlit_app.py:95:- Groq/LLaMA-3.3 investigation 
+reports
+  app\streamlit_app.py:96:""")
+  app\streamlit_app.py:97:st.sidebar.divider()
+  app\streamlit_app.py:98:
+  app\streamlit_app.py:99:st.sidebar.markdown("### 🔧 Tech 
+Stack")
+  app\streamlit_app.py:100:st.sidebar.markdown("""
+  app\streamlit_app.py:101:XGBoost · Optuna · Isolation 
+Forest
+> app\streamlit_app.py:102:SHAP · NetworkX · Pyvis
+  app\streamlit_app.py:103:Groq/LLaMA-3.3-70b · Streamlit
+  app\streamlit_app.py:104:""")
+  app\streamlit_app.py:105:
+  app\streamlit_app.py:106:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:107:# MAIN HEADER
+  app\streamlit_app.py:108:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:109:st.title("🔍 Mule Account 
+Detection System")
+  app\streamlit_app.py:110:st.markdown("*Detecting 
+financial crime through behavioral AI — not just rules*")
+  app\streamlit_app.py:112:# Top metrics row
+  app\streamlit_app.py:113:m1, m2, m3, m4, m5 = 
+st.columns(5)
+  app\streamlit_app.py:114:m1.metric("Total Accounts", 
+"9,082")
+> app\streamlit_app.py:115:m2.metric("🔴 Red", 
+str(risk_df[risk_df["risk_tier"]=="Red"].shape[0]))
+> app\streamlit_app.py:116:m3.metric("🟡 Amber", 
+str(risk_df[risk_df["risk_tier"]=="Amber"].shape[0]))
+  app\streamlit_app.py:117:m4.metric("✅ Mules Caught", "73 
+/ 81")
+  app\streamlit_app.py:118:m5.metric("📉 Workload Cut", 
+"98.9%")
+  app\streamlit_app.py:119:st.divider()
+  app\streamlit_app.py:120:
+  app\streamlit_app.py:121:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:122:# TABS
+  app\streamlit_app.py:123:# 
+─────────────────────────────────────────────
+  app\streamlit_app.py:124:tab1, tab2, tab3, tab4, tab5, 
+tab6 = st.tabs([
+  app\streamlit_app.py:126:    "🔎 Account Lookup",
+  app\streamlit_app.py:127:    "🕸️ Linkage Graph",
+  app\streamlit_app.py:128:    "📊 Model Comparison",
+> app\streamlit_app.py:129:    "📈 Model Insights",
+  app\streamlit_app.py:130:    "🔒 Audit Trail"
+  app\streamlit_app.py:131:])
+  app\streamlit_app.py:132:
+  app\streamlit_app.py:133:# 
+══════════════════════════════════════════════
+  app\streamlit_app.py:134:# TAB 1 — FLAGGED ACCOUNTS
+  app\streamlit_app.py:135:# 
+══════════════════════════════════════════════
+  app\streamlit_app.py:136:with tab1:
+  app\streamlit_app.py:137:    st.subheader("Flagged 
+Accounts Overview")
+  app\streamlit_app.py:183:        if row.empty:
+  app\streamlit_app.py:184:            st.error("Account 
+not found.")
+  app\streamlit_app.py:185:        else:
+> app\streamlit_app.py:186:            row = row.iloc[0]
+  app\streamlit_app.py:187:            tier = 
+row["risk_tier"]
+  app\streamlit_app.py:188:            tier_color = 
+{"Red": "🔴", "Amber": "🟡", "Green": "🟢"}.get(tier, "")
+  app\streamlit_app.py:189:            current_status = 
+get_account_status(int(account_input))
+  app\streamlit_app.py:190:
+  app\streamlit_app.py:191:            c1, c2, c3, c4, c5 
+= st.columns(5)
+  app\streamlit_app.py:192:            c1.metric("Risk 
+Score", f"{row['risk_score']:.4f}")
+  app\streamlit_app.py:193:            c2.metric("Risk 
+Tier", f"{tier_color} {tier}")
+  app\streamlit_app.py:194:            c3.metric("XGB 
+Probability", f"{row['xgb_proba']:.4f}")
+  app\streamlit_app.py:197:
+  app\streamlit_app.py:198:            st.divider()
+  app\streamlit_app.py:199:
+> app\streamlit_app.py:200:            col_shap, 
+col_report = st.columns([1, 1])
+  app\streamlit_app.py:201:
+> app\streamlit_app.py:202:            with col_shap:
+> app\streamlit_app.py:203:                
+st.markdown("#### 🧠 Top Risk Drivers (SHAP)")
+> app\streamlit_app.py:204:                drivers = 
+get_top_drivers(shap_df, int(account_input), top_n=8)
+  app\streamlit_app.py:205:                driver_df = 
+pd.DataFrame(drivers)
+> app\streamlit_app.py:206:                colors = 
+["crimson" if d["shap_value"] > 0 else "steelblue" for d 
+in drivers]
+  app\streamlit_app.py:207:
+  app\streamlit_app.py:208:                fig = 
+go.Figure(go.Bar(
+> app\streamlit_app.py:209:                    
+x=driver_df["shap_value"],
+  app\streamlit_app.py:210:                    
+y=driver_df["feature"],
+  app\streamlit_app.py:211:                    
+orientation="h",
+  app\streamlit_app.py:212:                    
+marker_color=colors,
+  app\streamlit_app.py:213:                ))
+  app\streamlit_app.py:214:                
+fig.update_layout(
+> app\streamlit_app.py:215:                    title="SHAP 
+Values (red=↑risk, blue=↓risk)",
+> app\streamlit_app.py:216:                    
+xaxis_title="SHAP Value",
+  app\streamlit_app.py:217:                    height=400,
+  app\streamlit_app.py:218:                    
+yaxis=dict(autorange="reversed")
+  app\streamlit_app.py:219:                )
+  app\streamlit_app.py:220:                
+st.plotly_chart(fig, use_container_width=True)
+  app\streamlit_app.py:221:
+  app\streamlit_app.py:222:            with col_report:
+  app\streamlit_app.py:223:                
+st.markdown("#### 📝 AI Investigation Report")
+  app\streamlit_app.py:224:                if tier in 
+["Red", "Amber"]:
+  app\streamlit_app.py:235:                                
+risk_tier=tier,
+  app\streamlit_app.py:236:                                
+xgb_proba=row["xgb_proba"],
+  app\streamlit_app.py:237:                                
+anomaly_score=row["anomaly_score"],
+> app\streamlit_app.py:238:                                
+shap_df=shap_df,
+  app\streamlit_app.py:239:                            )
+  app\streamlit_app.py:240:                        
+st.info(report_text)
+  app\streamlit_app.py:241:                else:
+  app\streamlit_app.py:242:                    
+st.success("✅ Low risk account. No investigation 
+required.")
+  app\streamlit_app.py:243:                    report_text 
+= "Low risk — no investigation required."
+  app\streamlit_app.py:244:
+  app\streamlit_app.py:245:            st.divider()
+  app\streamlit_app.py:246:            st.markdown("#### ⚡ 
+Take Action")
+  app\streamlit_app.py:258:                        
+risk_score=row["risk_score"],
+  app\streamlit_app.py:259:                        
+risk_tier=tier,
+  app\streamlit_app.py:260:                        
+xgb_proba=row["xgb_proba"],
+> app\streamlit_app.py:261:                        
+drivers=get_top_drivers(shap_df, int(account_input)),
+  app\streamlit_app.py:262:                        
+report_text=report_text
+  app\streamlit_app.py:263:                    )
+  app\streamlit_app.py:264:                    
+st.success(f"Account #{int(account_input)} frozen. SAR 
+generated.")
+  app\streamlit_app.py:265:
+  app\streamlit_app.py:266:            with col_act2:
+  app\streamlit_app.py:267:                if 
+st.button("🔎 Flag for Review"):
+  app\streamlit_app.py:268:                    
+log_action(int(account_input), "FLAG_FOR_REVIEW", tier,
+  app\streamlit_app.py:269:                               
+row["risk_score"], investigator, reason)
+  app\streamlit_app.py:374:        st.metric("Final 
+Combined (Model B)", "98")
+  app\streamlit_app.py:375:
+  app\streamlit_app.py:376:# 
+══════════════════════════════════════════════
+> app\streamlit_app.py:377:# TAB 5 — MODEL INSIGHTS
+  app\streamlit_app.py:378:# 
+══════════════════════════════════════════════
+  app\streamlit_app.py:379:with tab5:
+  app\streamlit_app.py:380:    st.subheader("Model 
+Performance Insights")
+  app\streamlit_app.py:381:
+  app\streamlit_app.py:382:    col_a, col_b = st.columns(2)
+  app\streamlit_app.py:383:
+  app\streamlit_app.py:384:    with col_a:
+  app\streamlit_app.py:385:        st.markdown("#### Risk 
+Score Distribution")
+  app\streamlit_app.py:414:            
+st.image(str(pr_img), use_container_width=True)
+  app\streamlit_app.py:415:
+  app\streamlit_app.py:416:    with col_d:
+> app\streamlit_app.py:417:        st.markdown("#### SHAP 
+Feature Importance")
+> app\streamlit_app.py:418:        shap_img = 
+config.OUTPUTS_DIR / "shap_summary.png"
+> app\streamlit_app.py:419:        if shap_img.exists():
+> app\streamlit_app.py:420:            
+st.image(str(shap_img), use_container_width=True)
+  app\streamlit_app.py:421:
+  app\streamlit_app.py:422:    st.divider()
+  app\streamlit_app.py:423:    st.markdown("#### 💼 
+Business Impact Summary")
+  app\streamlit_app.py:424:    b1, b2, b3, b4, b5 = 
+st.columns(5)
+  app\streamlit_app.py:425:    b1.metric("Total Accounts", 
+"9,082")
+  app\streamlit_app.py:426:    b2.metric("Mules Detected", 
+"73 / 81")
+  app\streamlit_app.py:427:    b3.metric("Recall", "90.1%")
+  app\streamlit_app.py:428:    b4.metric("Accounts 
+Flagged", "98")
+
+
