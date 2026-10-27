@@ -1,109 +1,247 @@
+
 import pandas as pd
 import numpy as np
 import networkx as nx
 from pyvis.network import Network
-import json
 from src import config
 
 
-def build_linkage_graph(X: pd.DataFrame, risk_df: pd.DataFrame,
-                        selected_features: list, top_n_links: int = 1):
+def build_linkage_graph(
+    X: pd.DataFrame,
+    risk_df: pd.DataFrame,
+    selected_features: list,
+    top_n_links: int = 1
+):
     """
     Build an attribute-based linkage graph.
-    Two accounts are linked if they share similar values on
-    multiple high-risk features — suggesting coordinated mule behavior.
+
+    Accounts are linked when their selected numeric features have
+    high cosine similarity. Account indices are treated as positional
+    row indices in X.
     """
-    # Work only with flagged accounts + a sample of normals for context
-    flagged_idx = risk_df[risk_df["risk_tier"].isin(["Red", "Amber"])]["account_idx"].tolist()
-    green_sample = risk_df[risk_df["risk_tier"] == "Green"].sample(
-        min(50, len(risk_df[risk_df["risk_tier"] == "Green"])),
-        random_state=config.RANDOM_STATE
-    )["account_idx"].tolist()
 
-    display_idx = flagged_idx + green_sample
-    X_display = X.iloc[display_idx][selected_features].copy()
+    X = X.reset_index(drop=True)
+    risk_df = risk_df.copy()
 
-    # Use only numeric, low-missing features for similarity
-    num_cols = X_display.select_dtypes(include=[np.number]).columns
-    X_num = X_display[num_cols].fillna(X_display[num_cols].median())
+    required_columns = [
+        "account_idx",
+        "risk_tier",
+        "risk_score",
+        "true_label",
+        "xgb_proba",
+    ]
 
-    # Normalize
-    X_norm = (X_num - X_num.min()) / (X_num.max() - X_num.min() + 1e-9)
-
-    # Build graph
-    G = nx.Graph()
-
-    # Add nodes
-    for i, idx in enumerate(display_idx):
-        row = risk_df[risk_df["account_idx"] == idx].iloc[0]
-        G.add_node(
-            idx,
-            tier=row["risk_tier"],
-            risk_score=round(float(row["risk_score"]), 4),
-            true_label=int(row["true_label"]),
-            xgb_proba=round(float(row["xgb_proba"]), 4),
+    missing_columns = [
+        col for col in required_columns if col not in risk_df.columns
+    ]
+    if missing_columns:
+        raise ValueError(
+            f"Missing columns in risk_df: {missing_columns}"
         )
 
-    # Add edges based on feature similarity
-    X_arr = X_norm.values
-    indices = list(range(len(display_idx)))
+    # Convert account indices to valid integers.
+    risk_df["account_idx"] = pd.to_numeric(
+        risk_df["account_idx"], errors="coerce"
+    )
+    risk_df = risk_df.dropna(subset=["account_idx"]).copy()
+    risk_df["account_idx"] = risk_df["account_idx"].astype(int)
 
-    for i in indices:
+    # Keep only indices that point to existing rows in X.
+    risk_df = risk_df[
+        (risk_df["account_idx"] >= 0)
+        & (risk_df["account_idx"] < len(X))
+    ].copy()
+
+    # One risk record per account to avoid duplicate graph nodes.
+    risk_df = risk_df.drop_duplicates(
+        subset=["account_idx"], keep="first"
+    )
+
+    # Select Red and Amber accounts.
+    flagged_idx = risk_df.loc[
+        risk_df["risk_tier"].isin(["Red", "Amber"]),
+        "account_idx",
+    ].tolist()
+
+    # Sample Green accounts for context.
+    green_df = risk_df[risk_df["risk_tier"] == "Green"]
+
+    green_sample = green_df.sample(
+        n=min(50, len(green_df)),
+        random_state=config.RANDOM_STATE,
+    )["account_idx"].tolist()
+
+    # Combine indices without duplicates.
+    display_idx = list(dict.fromkeys(flagged_idx + green_sample))
+
+    if not display_idx:
+        print("No eligible accounts found for the linkage graph.")
+        return nx.Graph(), []
+
+    # Keep only selected features that exist in X.
+    valid_features = [
+        feature
+        for feature in selected_features
+        if feature in X.columns
+    ]
+
+    if not valid_features:
+        raise ValueError(
+            "None of the selected features exist in X. "
+            "Check selected_features and the feature dataset."
+        )
+
+    # Extract account features using positional indexing.
+    X_display = X.iloc[display_idx][valid_features].copy()
+
+    # Keep numeric columns for similarity calculation.
+    X_num = X_display.select_dtypes(include=[np.number]).copy()
+
+    if X_num.shape[1] == 0:
+        raise ValueError(
+            "No numeric selected features are available for the graph."
+        )
+
+    # Replace infinite values, then impute missing values.
+    X_num = X_num.replace([np.inf, -np.inf], np.nan)
+    X_num = X_num.fillna(X_num.median()).fillna(0)
+
+    # Min-max normalization.
+    feature_min = X_num.min()
+    feature_range = X_num.max() - feature_min
+    X_norm = (X_num - feature_min) / (feature_range + 1e-9)
+
+    X_arr = X_norm.to_numpy(dtype=float)
+
+    # Create graph and add account nodes.
+    G = nx.Graph()
+
+    risk_lookup = risk_df.set_index("account_idx")
+
+    for idx in display_idx:
+        if idx not in risk_lookup.index:
+            continue
+
+        row = risk_lookup.loc[idx]
+
+        G.add_node(
+            idx,
+            tier=str(row["risk_tier"]),
+            risk_score=float(row["risk_score"]),
+            true_label=int(row["true_label"]),
+            xgb_proba=float(row["xgb_proba"]),
+        )
+
+    # Build similarity edges.
+    # Each account links to its top N most similar accounts.
+    node_indices = list(G.nodes())
+
+    # X_arr rows correspond to display_idx positions.
+    position_lookup = {
+        account_idx: position
+        for position, account_idx in enumerate(display_idx)
+    }
+
+    for account_idx in node_indices:
+        i = position_lookup[account_idx]
         similarities = []
-        for j in indices:
-            if i == j:
+
+        for other_idx in node_indices:
+            if account_idx == other_idx:
                 continue
-            dot = np.dot(X_arr[i], X_arr[j])
-            norm = np.linalg.norm(X_arr[i]) * np.linalg.norm(X_arr[j])
-            sim = dot / (norm + 1e-9)
-            similarities.append((j, sim))
 
-        # Link to top_n_links most similar accounts only
-        top_links = sorted(similarities, key=lambda x: x[1], reverse=True)[:top_n_links]
-        for j, sim in top_links:
-            if sim > 0.85:
-                G.add_edge(display_idx[i], display_idx[j], weight=round(sim, 3))
+            j = position_lookup[other_idx]
 
-    print(f"Graph built: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
-    return G, display_idx
+            vector_a = X_arr[i]
+            vector_b = X_arr[j]
+
+            denominator = (
+                np.linalg.norm(vector_a) * np.linalg.norm(vector_b)
+            )
+
+            if denominator < 1e-9:
+                similarity = 0.0
+            else:
+                similarity = float(
+                    np.dot(vector_a, vector_b) / denominator
+                )
+
+            similarities.append((other_idx, similarity))
+
+        top_links = sorted(
+            similarities,
+            key=lambda item: item[1],
+            reverse=True,
+        )[:max(0, top_n_links)]
+
+        for other_idx, similarity in top_links:
+            if similarity > 0.85:
+                G.add_edge(
+                    account_idx,
+                    other_idx,
+                    weight=round(similarity, 3),
+                )
+
+    print(
+        f"Graph built: {G.number_of_nodes()} nodes, "
+        f"{G.number_of_edges()} edges"
+    )
+
+    return G, list(G.nodes())
 
 
 def render_pyvis_graph(G: nx.Graph, save_path=None):
     """
-    Clean hierarchical layout — no physics, fixed positions.
-    Confirmed mules inner ring, risk tiers in concentric rings outward.
+    Render the account linkage graph as an interactive PyVis HTML graph.
+    Nodes are positioned in rings based on account risk tier and label.
     """
-    save_path = save_path or (config.OUTPUTS_DIR / "linkage_graph.html")
+
+    if save_path is None:
+        save_path = config.OUTPUTS_DIR / "linkage_graph.html"
+
+    save_path = str(save_path)
     config.OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Separate nodes by tier
-    mules = [n for n, d in G.nodes(data=True) if d.get("true_label") == 1]
-    red = [n for n, d in G.nodes(data=True)
-           if d.get("tier") == "Red" and d.get("true_label") == 0]
-    amber = [n for n, d in G.nodes(data=True) if d.get("tier") == "Amber"]
-    green = [n for n, d in G.nodes(data=True) if d.get("tier") == "Green"]
+    # Separate nodes by tier and true label.
+    mules = [
+        n for n, d in G.nodes(data=True)
+        if d.get("true_label", 0) == 1
+    ]
 
-    pos = {}
+    red = [
+        n for n, d in G.nodes(data=True)
+        if d.get("tier") == "Red"
+        and d.get("true_label", 0) != 1
+    ]
 
-    # Mules — inner ring (radius 350)
-    for i, node in enumerate(mules):
-        angle = 2 * np.pi * i / max(len(mules), 1)
-        pos[node] = (350 * np.cos(angle), 350 * np.sin(angle))
+    amber = [
+        n for n, d in G.nodes(data=True)
+        if d.get("tier") == "Amber"
+        and d.get("true_label", 0) != 1
+    ]
 
-    # Red — middle ring (radius 550)
-    for i, node in enumerate(red):
-        angle = 2 * np.pi * i / max(len(red), 1)
-        pos[node] = (550 * np.cos(angle), 550 * np.sin(angle))
+    green = [
+        n for n, d in G.nodes(data=True)
+        if d.get("tier") == "Green"
+        and d.get("true_label", 0) != 1
+    ]
 
-    # Amber — outer ring (radius 750)
-    for i, node in enumerate(amber):
-        angle = 2 * np.pi * i / max(len(amber), 1)
-        pos[node] = (750 * np.cos(angle), 750 * np.sin(angle))
+    positions = {}
 
-    # Green — outermost ring (radius 950)
-    for i, node in enumerate(green):
-        angle = 2 * np.pi * i / max(len(green), 1)
-        pos[node] = (950 * np.cos(angle), 950 * np.sin(angle))
+    def assign_ring(nodes, radius):
+        count = len(nodes)
+
+        for i, node in enumerate(nodes):
+            angle = 2 * np.pi * i / max(count, 1)
+            positions[node] = (
+                radius * np.cos(angle),
+                radius * np.sin(angle),
+            )
+
+    assign_ring(mules, 350)
+    assign_ring(red, 550)
+    assign_ring(amber, 750)
+    assign_ring(green, 950)
 
     net = Network(
         height="750px",
@@ -113,15 +251,16 @@ def render_pyvis_graph(G: nx.Graph, save_path=None):
         directed=False,
     )
 
-    # Disable physics — use fixed positions
+    # Use fixed positions rather than physics simulation.
     net.toggle_physics(False)
 
-    # Add nodes at fixed positions
     for node, data in G.nodes(data=True):
         tier = data.get("tier", "Green")
         is_mule = data.get("true_label", 0) == 1
-        risk_score = data.get("risk_score", 0)
-        x, y = pos.get(node, (0, 0))
+        risk_score = float(data.get("risk_score", 0))
+        xgb_proba = float(data.get("xgb_proba", 0))
+
+        x, y = positions.get(node, (0, 0))
 
         if is_mule:
             color = "#ff4444"
@@ -153,26 +292,40 @@ def render_pyvis_graph(G: nx.Graph, save_path=None):
                 f"Account: #{node}\n"
                 f"Risk Tier: {tier}\n"
                 f"Risk Score: {risk_score:.4f}\n"
-                f"XGB Prob: {data.get('xgb_proba', 0):.4f}\n"
-                f"Label: {'⚠️ MULE' if is_mule else '✓ Normal'}"
+                f"XGB Probability: {xgb_proba:.4f}\n"
+                f"Label: {'MULE' if is_mule else 'Normal'}"
+            ),
+        )
+
+    # Show links involving mules or high-risk accounts.
+    for u, v, data in G.edges(data=True):
+        u_data = G.nodes[u]
+        v_data = G.nodes[v]
+
+        u_tier = u_data.get("tier", "Green")
+        v_tier = v_data.get("tier", "Green")
+
+        u_mule = u_data.get("true_label", 0) == 1
+        v_mule = v_data.get("true_label", 0) == 1
+
+        show_edge = (
+            u_mule
+            or v_mule
+            or (
+                u_tier in ["Red", "Amber"]
+                and v_tier in ["Red", "Amber"]
             )
         )
 
-    # Add edges — only between mules and red/amber accounts
-    for u, v, data in G.edges(data=True):
-        u_tier = G.nodes[u].get("tier", "Green")
-        v_tier = G.nodes[v].get("tier", "Green")
-        u_mule = G.nodes[u].get("true_label", 0) == 1
-        v_mule = G.nodes[v].get("true_label", 0) == 1
+        if show_edge:
+            weight = float(data.get("weight", 0.5))
 
-        if (u_mule or v_mule or
-                (u_tier in ["Red", "Amber"] and v_tier in ["Red", "Amber"])):
-            weight = data.get("weight", 0.5)
             net.add_edge(
-                u, v,
+                u,
+                v,
                 width=max(0.5, weight * 2),
                 color="#ffffff22",
-                title=f"Similarity: {weight:.3f}"
+                title=f"Similarity: {weight:.3f}",
             )
 
     net.set_options("""
@@ -193,72 +346,94 @@ def render_pyvis_graph(G: nx.Graph, save_path=None):
     """)
 
     legend_html = """
-    <div style='position:absolute; top:10px; right:10px;
+    <div style="position:absolute; top:10px; right:10px;
                 background:rgba(15,17,23,0.95); padding:14px 18px;
                 border-radius:10px; border:1px solid #444;
-                font-family:Arial; font-size:13px; color:white; z-index:999;'>
-        <b style='font-size:15px'>🔍 Account Risk Network</b><br><br>
-        <span style='color:#ff4444; font-size:20px'>★</span>
-        <span style='color:#ff4444'> Confirmed Mule</span><br><br>
-        <span style='color:#ff8888; font-size:16px'>●</span>
-        <span style='color:#ff8888'> Red — High Risk</span><br><br>
-        <span style='color:#ffa500; font-size:16px'>◆</span>
-        <span style='color:#ffa500'> Amber — Medium Risk</span><br><br>
-        <span style='color:#51cf66; font-size:16px'>●</span>
-        <span style='color:#51cf66'> Green — Low Risk</span><br><br>
-        <hr style='border-color:#444; margin:8px 0'>
-        <i style='color:#888; font-size:11px'>
+                font-family:Arial; font-size:13px; color:white; z-index:999;">
+        <b style="font-size:15px">Account Risk Network</b><br><br>
+        <span style="color:#ff4444; font-size:20px">★</span>
+        <span style="color:#ff4444"> Confirmed Mule</span><br><br>
+        <span style="color:#ff8888; font-size:16px">●</span>
+        <span style="color:#ff8888"> Red — High Risk</span><br><br>
+        <span style="color:#ffa500; font-size:16px">◆</span>
+        <span style="color:#ffa500"> Amber — Medium Risk</span><br><br>
+        <span style="color:#51cf66; font-size:16px">●</span>
+        <span style="color:#51cf66"> Green — Low Risk</span><br><br>
+        <hr style="border-color:#444; margin:8px 0">
+        <i style="color:#888; font-size:11px">
             Rings: Mules → Red → Amber → Green<br>
-            Edges = behavioral similarity<br>
-            Scroll to zoom · Drag to pan<br>
-            Hover node for full details
+            Edges represent feature similarity<br>
+            Scroll to zoom; drag to pan<br>
+            Hover over a node for details
         </i>
     </div>
-    <div style='position:absolute; bottom:10px; left:50%; transform:translateX(-50%);
+    <div style="position:absolute; bottom:10px; left:50%;
+                transform:translateX(-50%);
                 background:rgba(15,17,23,0.95); padding:6px 16px;
                 border-radius:20px; border:1px solid #444;
-                font-family:Arial; font-size:11px; color:#888; z-index:999;'>
-        ⭕ Inner → Confirmed Mules &nbsp;·&nbsp;
-        🔴 Middle → High Risk &nbsp;·&nbsp;
-        🟠 Outer → Medium Risk &nbsp;·&nbsp;
-        🟢 Outermost → Low Risk
+                font-family:Arial; font-size:11px; color:#888; z-index:999;">
+        Inner: Mules &nbsp;·&nbsp; Red: High Risk &nbsp;·&nbsp;
+        Amber: Medium Risk &nbsp;·&nbsp; Green: Low Risk
     </div>
     """
 
-    net.save_graph(str(save_path))
+    net.save_graph(save_path)
 
-    with open(save_path, "r", encoding="utf-8") as f:
-        html = f.read()
+    # Inject legend into the generated HTML.
+    with open(save_path, "r", encoding="utf-8") as file:
+        html = file.read()
+
     html = html.replace("</body>", f"{legend_html}</body>")
-    with open(save_path, "w", encoding="utf-8") as f:
-        f.write(html)
+
+    with open(save_path, "w", encoding="utf-8") as file:
+        file.write(html)
 
     print(f"Linkage graph saved to {save_path}")
+
     return save_path
 
 
 def get_connected_components(G: nx.Graph, risk_df: pd.DataFrame):
     """
-    Find clusters of connected suspicious accounts.
-    Returns summary of each cluster.
+    Find connected clusters of linked suspicious accounts.
+    Returns a summary of each component with two or more nodes.
     """
+
     clusters = []
+
     for component in nx.connected_components(G):
         if len(component) < 2:
             continue
 
-        component_risk = risk_df[risk_df["account_idx"].isin(component)]
-        mule_count = component_risk[component_risk["true_label"] == 1].shape[0]
-        red_count = component_risk[component_risk["risk_tier"] == "Red"].shape[0]
+        component_risk = risk_df[
+            risk_df["account_idx"].isin(component)
+        ]
+
+        mule_count = component_risk[
+            component_risk["true_label"] == 1
+        ].shape[0]
+
+        red_count = component_risk[
+            component_risk["risk_tier"] == "Red"
+        ].shape[0]
+
         avg_risk = component_risk["risk_score"].mean()
 
         clusters.append({
             "size": len(component),
             "mule_count": mule_count,
             "red_count": red_count,
-            "avg_risk_score": round(avg_risk, 4),
-            "account_ids": list(component)
+            "avg_risk_score": (
+                round(float(avg_risk), 4)
+                if pd.notna(avg_risk)
+                else 0.0
+            ),
+            "account_ids": list(component),
         })
 
-    clusters = sorted(clusters, key=lambda x: x["avg_risk_score"], reverse=True)
+    clusters.sort(
+        key=lambda cluster: cluster["avg_risk_score"],
+        reverse=True,
+    )
+
     return clusters
